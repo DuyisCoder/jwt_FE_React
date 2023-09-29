@@ -3,8 +3,31 @@ import './login.scss'
 const Login = () => {
     return (
         <div className='login-container'>
-            <h1>Login</h1>
-            <button className='btn btn-primary'>Add</button>
+            <div className='container'>
+                <div className='row px-3 px-sm-0'>
+                    <div className='content-left col-12 col-sm-7 d-sm-block d-none '>
+                        <div className='brand'>
+                            Facebook
+                        </div>
+                        <div className='detail'>
+                            Learning everything..............
+                        </div>
+                    </div>
+                    <div className='content-right col-12 col-sm-5 d-flex flex-column gap-3 py-3 '>
+                        <div className='brand d-sm-none'>Facebook</div>
+                        <input type='text' className='form-control' placeholder='Email and phone number....'></input>
+                        <input type='password' className='form-control' placeholder='Password....'></input>
+                        <button className='btn btn-primary'>Login</button>
+                        <span className='text-center'>
+                            <a className='forgot-password'>Forgot your password?</a>
+                        </span>
+                        <hr></hr>
+                        <div className='text-center'>
+                            <button className='btn btn-success'>Create new account</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }

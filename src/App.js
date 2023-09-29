@@ -1,6 +1,6 @@
 
 import './App.scss';
-import Login from './Components/Login/Login';
+import Login from './Components/Login/Login'
 import Nav from './Components/Navigation/Nav';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
@@ -12,14 +12,14 @@ function App() {
   return (
     <Router>
       <div className='app-container'>
-        <Nav></Nav>
+        {/* <Nav></Nav> */}
         <Routes>
           <Route path="/" exact  >home</Route>
           <Route path="/news" >News</Route>
           <Route path="/about" >About</Route>
           <Route path="/contact" >Contact</Route>
 
-          <Route path='/login' element={<Login />} />
+          <Route path='/login' element={<Login></Login>} />
 
           <Route path="*" element={<NotFound />}></Route>
         </Routes>
