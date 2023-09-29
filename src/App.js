@@ -3,6 +3,7 @@ import './App.scss';
 import Login from './Components/Login/Login'
 import Nav from './Components/Navigation/Nav';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Register from './Components/Register/Register';
 
 function NotFound() {
   return <h1>404 - Page Not Found</h1>;
@@ -20,6 +21,7 @@ function App() {
           <Route path="/contact" >Contact</Route>
 
           <Route path='/login' element={<Login></Login>} />
+          <Route path='/register' element={<Register></Register>} />
 
           <Route path="*" element={<NotFound />}></Route>
         </Routes>
