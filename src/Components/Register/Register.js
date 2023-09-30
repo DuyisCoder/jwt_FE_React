@@ -3,46 +3,75 @@ import './register.scss'
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import axios from 'axios';
+import { useEffect } from 'react';
 const Register = () => {
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const defaultValidInput = {
+        isValidEmail: true,
+        isValidPhone: true,
+        isValidUsername: true,
+        isValidPassword: true,
+        isValidConfirmPassword: true
+    }
+    const [objCheckInput, setObjCheckInput] = useState(defaultValidInput);
     const isValidate = () => {
+        setObjCheckInput(defaultValidInput);
         if (!email) {
-            toast.success("Email is required!!")
-            return false;
-        }
-        if (!phone) {
             toast.error("Email is required!!")
-            return false;
-        }
-        if (!username) {
-            toast.error("Email is required!!")
-            return false;
-        }
-        if (!password) {
-            toast.error("Email is required!!")
-            return false;
-        }
-        if (password != confirmPassword) {
-            toast.error('Password not the same!!');
+            setObjCheckInput({ ...defaultValidInput, isValidEmail: false });
             return false;
         }
         let regex = /^\S+@\S+\.\S+$/;
         if (!regex.test(email)) {
             toast.error('Email is not validation!!');
+            setObjCheckInput({ ...defaultValidInput, isValidEmail: false });
             return false;
         }
-
+        if (!phone) {
+            toast.error("Phone is required!!")
+            setObjCheckInput({ ...defaultValidInput, isValidPhone: false });
+            return false;
+        }
+        if (!username) {
+            toast.error("Username is required!!")
+            setObjCheckInput({ ...defaultValidInput, isValidUsername: false });
+            return false;
+        }
+        if (!password) {
+            toast.error("Password is required!!")
+            setObjCheckInput({ ...defaultValidInput, isValidPassword: false });
+            return false;
+        }
+        if (password.length < 6) {
+            toast.error('Password length is max 6!')
+            setObjCheckInput({ ...defaultValidInput, isValidPassword: false });
+            return false;
+        }
+        if (password != confirmPassword) {
+            toast.error('Password not the same!!');
+            setObjCheckInput({ ...defaultValidInput, isValidConfirmPassword: false });
+            return false;
+        }
         return true;
     }
     const handleSubmit = () => {
         let check = isValidate();
-        let userData = { email, phone, username, password };
-        console.log("userData", userData);
+        if (check == true) {
+            axios.post('http://localhost:8888/api/v1/register', {
+                email, phone, username, password
+            })
+        }
     }
+    useEffect(() => {
+        // await axios.get("http://localhost:8888/api/v1/test-api")
+        //     .then(data => console.log("data", data));
+
+    }, [])
 
     const navigate = useNavigate();
     const handleLogin = () => {
@@ -64,19 +93,28 @@ const Register = () => {
                         <div className='brand d-sm-none'>Facebook</div>
                         <div className='form-group'>
                             <label>Email</label>
-                            <input value={email} onChange={(e) => setEmail(e.target.value)} type='text' className='form-control' placeholder='@gmail.com...'></input>
+                            <input value={email} onChange={(e) => setEmail(e.target.value)}
+                                type='text'
+                                className={objCheckInput.isValidEmail ? 'form-control' : 'form-control is-invalid'}
+                                placeholder='@gmail.com...'></input>
                         </div>
                         <div className='form-group'>
                             <label>Phone Number</label>
-                            <input value={phone} onChange={(e) => setPhone(e.target.value)} type='text' className='form-control' placeholder='Phone number....'></input>
+                            <input value={phone} onChange={(e) => setPhone(e.target.value)}
+                                className={objCheckInput.isValidPhone ? 'form-control' : 'form-control is-invalid'}
+                                type='text' placeholder='Phone number....'></input>
                         </div>
                         <div className='form-group'>
                             <label>Username</label>
-                            <input value={username} onChange={(e) => setUsername(e.target.value)} type='text' className='form-control' placeholder='Phone number....'></input>
+                            <input value={username} onChange={(e) => setUsername(e.target.value)}
+                                className={objCheckInput.isValidUsername ? 'form-control' : 'form-control is-invalid'}
+                                type='text' placeholder='Phone number....'></input>
                         </div>
                         <div className='form-group'>
                             <label>Password</label>
-                            <input value={password} onChange={(e) => setPassword(e.target.value)} type='password' className='form-control' placeholder='Password....'></input>
+                            <input value={password} onChange={(e) => setPassword(e.target.value)}
+                                type='password' placeholder='Password....'
+                                className={objCheckInput.isValidPassword ? 'form-control' : 'form-control is-invalid'}></input>
                         </div>
                         <div className='form-group'>
                             <label>Re-Password</label>

@@ -8,10 +8,7 @@ const Login = () => {
     const handleCreateAccount = () => {
         navigate('/register');
     }
-    useEffect(async () => {
-        await axios.get("http://localhost:8888/api/test-api")
-            .then(data => console.log("data", data.data));
-    })
+   
     return (
         <div className='login-container'>
             <div className='container'>

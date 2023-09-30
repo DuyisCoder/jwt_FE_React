@@ -27,7 +27,7 @@ function App() {
           <Route path="*" element={<NotFound />}></Route>
         </Routes>
       </div>
-      <ToastContainer position="top-right"
+      <ToastContainer position="bottom-right"
         autoClose={5000}
         hideProgressBar={false}
         newestOnTop={false}
