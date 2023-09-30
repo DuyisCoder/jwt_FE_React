@@ -1,11 +1,17 @@
 import './login.scss'
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react';
+import axios from 'axios'
 const Login = () => {
     const navigate = useNavigate();
     const handleCreateAccount = () => {
         navigate('/register');
     }
+    useEffect(async () => {
+        await axios.get("http://localhost:8888/api/test-api")
+            .then(data => console.log("data", data.data));
+    })
     return (
         <div className='login-container'>
             <div className='container'>
