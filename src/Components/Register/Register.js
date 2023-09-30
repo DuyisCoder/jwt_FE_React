@@ -1,7 +1,49 @@
+import { useState } from 'react';
 import './register.scss'
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 const Register = () => {
+    const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const isValidate = () => {
+        if (!email) {
+            toast.success("Email is required!!")
+            return false;
+        }
+        if (!phone) {
+            toast.error("Email is required!!")
+            return false;
+        }
+        if (!username) {
+            toast.error("Email is required!!")
+            return false;
+        }
+        if (!password) {
+            toast.error("Email is required!!")
+            return false;
+        }
+        if (password != confirmPassword) {
+            toast.error('Password not the same!!');
+            return false;
+        }
+        let regex = /^\S+@\S+\.\S+$/;
+        if (!regex.test(email)) {
+            toast.error('Email is not validation!!');
+            return false;
+        }
+
+        return true;
+    }
+    const handleSubmit = () => {
+        let check = isValidate();
+        let userData = { email, phone, username, password };
+        console.log("userData", userData);
+    }
+
     const navigate = useNavigate();
     const handleLogin = () => {
         navigate('/login');
@@ -22,26 +64,26 @@ const Register = () => {
                         <div className='brand d-sm-none'>Facebook</div>
                         <div className='form-group'>
                             <label>Email</label>
-                            <input type='text' className='form-control' placeholder='@gmail.com...'></input>
+                            <input value={email} onChange={(e) => setEmail(e.target.value)} type='text' className='form-control' placeholder='@gmail.com...'></input>
                         </div>
                         <div className='form-group'>
                             <label>Phone Number</label>
-                            <input type='text' className='form-control' placeholder='Phone number....'></input>
+                            <input value={phone} onChange={(e) => setPhone(e.target.value)} type='text' className='form-control' placeholder='Phone number....'></input>
                         </div>
                         <div className='form-group'>
                             <label>Username</label>
-                            <input type='text' className='form-control' placeholder='Phone number....'></input>
+                            <input value={username} onChange={(e) => setUsername(e.target.value)} type='text' className='form-control' placeholder='Phone number....'></input>
                         </div>
                         <div className='form-group'>
                             <label>Password</label>
-                            <input type='password' className='form-control' placeholder='Password....'></input>
+                            <input value={password} onChange={(e) => setPassword(e.target.value)} type='password' className='form-control' placeholder='Password....'></input>
                         </div>
                         <div className='form-group'>
                             <label>Re-Password</label>
-                            <input type='password' className='form-control' placeholder='Password....'></input>
+                            <input value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} type='password' className='form-control' placeholder='Password....'></input>
                         </div>
 
-                        <button className='btn btn-primary'>Register</button>
+                        <button className='btn btn-primary' onClick={() => handleSubmit()}>Register</button>
                         <hr></hr>
                         <div className='text-center'>
                             <span>Already have account?</span>

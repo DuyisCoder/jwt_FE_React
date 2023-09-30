@@ -4,7 +4,8 @@ import Login from './Components/Login/Login'
 import Nav from './Components/Navigation/Nav';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Register from './Components/Register/Register';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 function NotFound() {
   return <h1>404 - Page Not Found</h1>;
 }
@@ -26,6 +27,17 @@ function App() {
           <Route path="*" element={<NotFound />}></Route>
         </Routes>
       </div>
+      <ToastContainer position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      ></ToastContainer>
     </Router>
 
   );
