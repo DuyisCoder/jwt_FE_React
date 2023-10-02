@@ -1,16 +1,18 @@
 import { useState } from 'react';
 import './register.scss'
-import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import axios from 'axios';
-import { useEffect } from 'react';
+import { registerUser } from '../services/userSevices';
 const Register = () => {
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const navigate = useNavigate();
+    const handleLogin = () => {
+        navigate('/login');
+    }
     const defaultValidInput = {
         isValidEmail: true,
         isValidPhone: true,
@@ -59,23 +61,26 @@ const Register = () => {
         }
         return true;
     }
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         let check = isValidate();
         if (check == true) {
-            axios.post('http://localhost:8888/api/v1/register', {
-                email, phone, username, password
-            })
+            let res = await registerUser(email, phone, username, password);
+            let dataServer = res.data;
+            if (+dataServer.EC === 0) {
+                toast.success(dataServer.EM);
+                setTimeout(() => {
+                    navigate('/login');
+                }, [1500])
+            } else {
+                if (+dataServer.EC === 2) {
+                    setObjCheckInput({ ...defaultValidInput, isValidPhone: false });
+                    toast.error(dataServer.EM);
+                } else if (+dataServer.EC === 1) {
+                    setObjCheckInput({ ...defaultValidInput, isValidEmail: false });
+                    toast.error(dataServer.EM);
+                }
+            }
         }
-    }
-    useEffect(() => {
-        // await axios.get("http://localhost:8888/api/v1/test-api")
-        //     .then(data => console.log("data", data));
-
-    }, [])
-
-    const navigate = useNavigate();
-    const handleLogin = () => {
-        navigate('/login');
     }
     return (
         <div className='register-container'>
