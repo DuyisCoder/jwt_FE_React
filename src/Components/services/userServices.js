@@ -13,4 +13,7 @@ const loginUser = (valueLogin, password) => {
 const fetchUserData = (page, limit) => {
     return axios.get(`http://localhost:8888/api/v1/user/read?page=${page}&limit=${limit}`)
 }
-export { registerUser, loginUser, fetchUserData };
+const deleteUser = (user) => {
+    return axios.delete('http://localhost:8888/api/v1/user/delete', { data: { id: user.id } });
+}
+export { registerUser, loginUser, fetchUserData, deleteUser };
