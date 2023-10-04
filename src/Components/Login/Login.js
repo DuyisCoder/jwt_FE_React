@@ -1,30 +1,49 @@
 import './login.scss'
-import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-toastify'
-import axios from 'axios'
+import { loginUser } from '../services/userServices';
 const Login = () => {
-    const [email, setEmail] = useState("");
+    const [valueLogin, setValueLogin] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
-    const handleLogin = async () => {
-        axios.post('http://localhost:8888/api/v1/login', {
-            email, password
-        })
-        toast.success('Đăng nhập thành công!');
-        // navigate('/Home')
-    }
     const handleCreateAccount = () => {
         navigate('/register');
     }
     const defaultValidInput = {
-        isValidEmail: true,
+        isValidLogin: true,
         isValidPassword: true,
-        isValidConfirmPassword: true
     }
     const [objCheckInput, setObjCheckInput] = useState(defaultValidInput);
+    const handleLogin = async () => {
+        setObjCheckInput(defaultValidInput);
+        if (!valueLogin) {
+            setObjCheckInput({ ...defaultValidInput, isValidLogin: false });
+            toast.error('Please enter your email address and phone number!')
+            return;
+        }
+        if (!password) {
+            setObjCheckInput({ ...defaultValidInput, isValidPassword: true });
+            toast.error('Please enter your password!')
+            return;
 
+        }
+        let res = await loginUser(valueLogin, password);
+        if (res && res.data && +res.data.EC === 0) {
+            toast.success(res.data.EM);
+            navigate('/users');
+            let data = {
+                isAuthenticated: true,
+                token: 'fake token'
+            }
+            sessionStorage.setItem('account', JSON.stringify(data));
+            return;
+        }
+        if (res && res.data && +res.data.EC !== 0) {
+            toast.error(res.data.EM);
+            return;
+        }
+    }
     return (
         <div className='login-container'>
             <div className='container'>
@@ -40,9 +59,9 @@ const Login = () => {
                     <div className='content-right col-12 col-sm-5 d-flex flex-column gap-3 py-3 '>
                         <div className='brand d-sm-none'>Facebook</div>
                         <input type='text'
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className={objCheckInput.isValidEmail ? 'form-control' : 'form-control is-invalid'}
+                            value={valueLogin}
+                            onChange={(e) => setValueLogin(e.target.value)}
+                            className={objCheckInput.isValidLogin ? 'form-control' : 'form-control is-invalid'}
                             placeholder='Email and phone number....'></input>
                         <input type='password'
                             value={password}
