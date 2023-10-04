@@ -12,8 +12,8 @@ export default function Nav() {
     return (
         <>
             {showNav === true &&
-                <div className="topnav">
-                    <NavLink className="active" exact to="/">Home</NavLink>
+                <div class="topnav">
+                    <NavLink exact to="/">Home</NavLink>
                     <NavLink to="/users">Users</NavLink>
                     <NavLink to="/project">Project</NavLink>
                     <NavLink to="/about">About</NavLink>
