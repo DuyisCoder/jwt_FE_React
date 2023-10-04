@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './register.scss'
-import { useNavigate } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { registerUser } from '../services/userServices';
 const Register = () => {
@@ -9,9 +9,9 @@ const Register = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const navigate = useNavigate();
+    const history = useHistory();
     const handleLogin = () => {
-        navigate('/login');
+        history.push('/login');
     }
     const defaultValidInput = {
         isValidEmail: true,
@@ -69,7 +69,7 @@ const Register = () => {
             if (+dataServer.EC === 0) {
                 toast.success(dataServer.EM);
                 setTimeout(() => {
-                    navigate('/login');
+                    history.push('/login');
                 }, [1500])
             } else {
                 if (+dataServer.EC === 2) {

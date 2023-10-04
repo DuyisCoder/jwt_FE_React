@@ -1,14 +1,14 @@
 import './login.scss'
-import { useNavigate } from 'react-router-dom'
-import { useState } from 'react';
+import { useHistory } from 'react-router-dom'
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify'
 import { loginUser } from '../services/userServices';
 const Login = () => {
     const [valueLogin, setValueLogin] = useState("");
     const [password, setPassword] = useState("");
-    const navigate = useNavigate();
+    const history = useHistory();
     const handleCreateAccount = () => {
-        navigate('/register');
+        history.push('/register');
     }
     const defaultValidInput = {
         isValidLogin: true,
@@ -31,12 +31,14 @@ const Login = () => {
         let res = await loginUser(valueLogin, password);
         if (res && res.data && +res.data.EC === 0) {
             toast.success(res.data.EM);
-            navigate('/users');
             let data = {
                 isAuthenticated: true,
                 token: 'fake token'
             }
             sessionStorage.setItem('account', JSON.stringify(data));
+
+            history.push('/users');
+            window.location.reload();
             return;
         }
         if (res && res.data && +res.data.EC !== 0) {
@@ -44,6 +46,19 @@ const Login = () => {
             return;
         }
     }
+    const handlePressEnter = (e) => {
+        console.log(e.charCode, e.key);
+        if (e.charCode === 13 && e.code === "Enter") {
+            handleLogin();
+        }
+    }
+    useEffect(() => {
+        let session = sessionStorage.getItem('account');
+        if (session) {
+            history.push('/');
+            window.location.reload();
+        }
+    })
     return (
         <div className='login-container'>
             <div className='container'>
@@ -66,6 +81,7 @@ const Login = () => {
                         <input type='password'
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            onKeyPress={(e) => handlePressEnter(e)}
                             className={objCheckInput.isValidPassword ? 'form-control' : 'form-control is-invalid'}
                             placeholder='Password....'></input>
                         <button className='btn btn-primary' onClick={() => handleLogin()}>Login</button>
