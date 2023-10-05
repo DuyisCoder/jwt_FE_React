@@ -65,6 +65,7 @@ const Register = () => {
         let check = isValidate();
         if (check == true) {
             let res = await registerUser(email, phone, username, password);
+            console.log(res);
             let dataServer = res.data;
             if (+dataServer.EC === 0) {
                 toast.success(dataServer.EM);

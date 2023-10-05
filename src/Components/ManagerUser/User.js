@@ -4,6 +4,7 @@ import { deleteUser, fetchUserData } from '../services/userServices'
 import ReactPaginate from 'react-paginate';
 import { toast } from 'react-toastify'
 import ModelDelete from '../ModelFrom/ModelDelete'
+import ModelUser from '../ModelFrom/ModelUser'
 export default function User() {
     const [listUser, setListUser] = useState([]);
     const [page, setPage] = useState(1)
@@ -11,6 +12,7 @@ export default function User() {
     const [totalPages, setTotalPages] = useState(0)
     const [showModalDelete, setShowModalDelete] = useState(false);
     const [dataModal, setDataModel] = useState({});
+    const [showModalUser, setShowModalUser] = useState(false);
     useEffect(() => {
         fetch();
 
@@ -46,6 +48,12 @@ export default function User() {
             toast.error(res.data.EM);
         }
     }
+    const handleCreateUser = () => {
+        setShowModalUser(true);
+    }
+    const handleHiddenModal = () => {
+        setShowModalUser(false);
+    }
     return (
         <>
             <div className='container'>
@@ -56,7 +64,7 @@ export default function User() {
                         </div>
                         <div className='actions'>
                             <button className='btn btn-success'>Refresh</button>
-                            <button className='btn btn-primary'>Create User</button>
+                            <button onClick={() => handleCreateUser()} className='btn btn-primary'>Create User</button>
                         </div>
                     </div>
                     <div className='user-body mt-3'>
@@ -138,6 +146,10 @@ export default function User() {
                 confirmDeleteUser={confirmDeleteUser}
                 dataModal={dataModal}
             />
+            <ModelUser
+                title={"Create New User"}
+                onHide={handleHiddenModal}
+                show={showModalUser} />
         </>
 
     )
