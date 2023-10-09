@@ -1,18 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import './User.scss'
-import { deleteUser, fetchUserData } from '../services/userServices'
+import { deleteUser, fetchUserData, updateUser } from '../services/userServices'
 import ReactPaginate from 'react-paginate';
 import { toast } from 'react-toastify'
 import ModelDelete from '../ModelFrom/ModelDelete'
 import ModelUser from '../ModelFrom/ModelUser'
+import { set } from 'lodash';
 export default function User() {
     const [listUser, setListUser] = useState([]);
     const [page, setPage] = useState(1)
-    const [limit, setLimit] = useState(2)
+    const [limit, setLimit] = useState(6)
     const [totalPages, setTotalPages] = useState(0)
-    const [showModalDelete, setShowModalDelete] = useState(false);
+    // dataModal delete
     const [dataModal, setDataModel] = useState({});
+    const [showModalDelete, setShowModalDelete] = useState(false);
+    // dataModal edit/create
     const [showModalUser, setShowModalUser] = useState(false);
+    const [actionModalUser, setActionModalUser] = useState("CREATE");
+    const [dataModalEdit, setDataModelEdit] = useState({});
     useEffect(() => {
         fetch();
 
@@ -43,16 +48,24 @@ export default function User() {
             setTimeout(async () => {
                 await fetch();
                 setShowModalDelete(false);
-            }, [1700])
+            }, [500])
         } else {
             toast.error(res.data.EM);
         }
     }
     const handleCreateUser = () => {
         setShowModalUser(true);
+        setActionModalUser("CREATE");// Click vào Edit sẽ phải set lại nếu ko sẽ bị bug
     }
     const handleHiddenModal = () => {
         setShowModalUser(false);
+        setDataModelEdit({});
+        fetch();//khi đóng modal cần pải fetch API lại để hiện user khi create ma kh can load lai trang
+    }
+    const handleEdit = (user) => {
+        setActionModalUser("UPDATE");
+        setDataModelEdit(user);
+        setShowModalUser(true);
     }
     return (
         <>
@@ -83,16 +96,17 @@ export default function User() {
                                 {listUser && listUser.length > 0 ?
                                     <>
                                         {listUser.map((item, index) => {
+
                                             return (
                                                 <tr key={index}>
-                                                    <td>{index + 1}</td>
+                                                    <td>{(page - 1) * limit + index + 1}</td>
                                                     <td>{item.id}</td>
                                                     <td>{item.email}</td>
                                                     <td>{item.username}</td>
                                                     <td>{item.Group ? item.Group.name : 'Chưa có'}</td>
                                                     <td className='d-flex justify-content-around'>
                                                         <button className='btn btn-warning'
-
+                                                            onClick={() => handleEdit(item)}
                                                         >Edit</button>
                                                         <button
                                                             onClick={() => handleDelete(item)}
@@ -147,9 +161,10 @@ export default function User() {
                 dataModal={dataModal}
             />
             <ModelUser
-                title={"Create New User"}
                 onHide={handleHiddenModal}
-                show={showModalUser} />
+                show={showModalUser}
+                action={actionModalUser}
+                dataModalEdit={dataModalEdit} />
         </>
 
     )

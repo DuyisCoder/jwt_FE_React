@@ -2,11 +2,11 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import './ModelUser.scss'
 import { useEffect, useState } from 'react';
-import { fetchGroup, createUser } from '../services/userServices';
+import { fetchGroup, createUser, updateUser } from '../services/userServices';
 import { toast } from 'react-toastify';
 
 //sử dụng lodash để copyy
-import lodash from 'lodash'
+import lodash, { lowerFirst } from 'lodash'
 function ModalDelete(props) {
     const [groupUser, setGroupUser] = useState([]);
     useEffect(() => {
@@ -58,6 +58,7 @@ function ModalDelete(props) {
         setUserData(_userData);
     }
     const handleValidateInput = () => {
+        if (props.action === "UPDATE") return true; // neu UPDATE se bo Validate 
         setIsValidInput(valueValidDefault)
         let arr = ['email', 'phone', 'password', 'group'];
         let check = true;
@@ -77,28 +78,55 @@ function ModalDelete(props) {
     const handleConfirm = async () => {
         let check = handleValidateInput();
         if (check === true) {
-            let res = await createUser({ ...userData, groupId: userData['group'] });
+            let res = props.action === 'CREATE'
+                ?
+                await createUser({ ...userData, groupId: userData['group'] })
+                :
+                await updateUser({ ...userData, groupId: userData['group'] });
             if (res && res.data.EC === 0) {
                 toast.success(res.data.EM);
                 props.onHide();
-                setUserData({ ...defaultUserData, group: groupUser[0].id })
-            } else {
+                setUserData({ ...defaultUserData, group: groupUser && groupUser.length > 0 ? groupUser[0].id : '' })
+            } else if (res && res.data.EC !== 0) {
                 toast.error(res.data.EM);
+                let _validInput = lodash.cloneDeep(valueValidDefault);
+                _validInput[res.data.DT] = false;
+                setIsValidInput(_validInput);
             }
         }
+    }
+    useEffect(() => {
+        if (props.action === "UPDATE") {
+            setUserData({ ...props.dataModalEdit, group: props.dataModalEdit.Group ? props.dataModalEdit.Group.id : '' });
+        }
+    }, [props.dataModalEdit])
+    useEffect(() => {
+        if (props.action === 'CREATE') {
+            // lan dau tien khi click vao CREATE
+            // va neu groupUser co data thi
+            if (groupUser && groupUser.length > 0) {
+                setUserData({ ...userData, group: groupUser[0].id })
+            }
+        }
+    }, [props.action])
+    const closeHandleUser = () => {
+        props.onHide();
+        setUserData(defaultUserData);
+        setIsValidInput(valueValidDefault);
     }
     return (
         <>
             <Modal size="lg" className='modal-user'
-                show={props.show} onHide={props.onHide} >
+                show={props.show} onHide={() => closeHandleUser()} >
                 <Modal.Header closeButton>
-                    <Modal.Title>{props.title}</Modal.Title>
+                    <Modal.Title>{props.action === "CREATE" ? "Create New User" : "Edit User"}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <div className='content-body row'>
                         <div className='form-group col-sm-6 col-12'>
                             <label>Email address (<span className='red'>*</span>) :</label>
                             <input
+                                disabled={props.action === "CREATE" ? false : true}
                                 className={isValidInput.email ? 'form-control' : 'form-control is-invalid'}
                                 type='email'
                                 value={userData.email}
@@ -108,21 +136,16 @@ function ModalDelete(props) {
                         <div className='form-group col-sm-6 col-12'>
                             <label>Phone number (<span className='red'>*</span>) :</label>
                             <input
+                                disabled={props.action === "CREATE" ? false : true}
                                 className={isValidInput.phone ? 'form-control' : 'form-control is-invalid'}
                                 type='text'
                                 value={userData.phone}
                                 onChange={(e) => handleOnChange(e.target.value, 'phone')}
                             />
                         </div>
-                        <div className='form-group col-12 col-sm-6'>
-                            <label>Password (<span className='red'>*</span>) :</label>
-                            <input
-                                className={isValidInput.password ? 'form-control' : 'form-control is-invalid'}
-                                type='password'
-                                value={userData.password}
-                                onChange={(e) => handleOnChange(e.target.value, 'password')}
-                            />
-                        </div>
+
+
+
                         <div className='form-group col-12 col-sm-6'>
                             <label>Username (<span className='red'>*</span>) :</label>
                             <input className={isValidInput.username ? 'form-control' : 'form-control is-invalid'}
@@ -131,7 +154,20 @@ function ModalDelete(props) {
                                 onChange={(e) => handleOnChange(e.target.value, 'username')}
                             />
                         </div>
-                        <div className='form-group col-12 col-6'>
+                        <div className='form-group col-12 col-sm-6'>
+                            {props.action === "CREATE" &&
+                                <>
+                                    <label>Password (<span className='red'>*</span>) :</label>
+                                    <input
+                                        className={isValidInput.password ? 'form-control' : 'form-control is-invalid'}
+                                        type='password'
+                                        value={userData.password}
+                                        onChange={(e) => handleOnChange(e.target.value, 'password')}
+                                    />
+                                </>
+                            }
+                        </div>
+                        <div className='form-group col-12 col-sm-12'>
                             <label>Address (<span className='red'>*</span>) :</label>
                             <input
                                 className={isValidInput.address ? 'form-control' : 'form-control is-invalid'}
@@ -156,6 +192,7 @@ function ModalDelete(props) {
                             <select
                                 className={isValidInput.group ? 'form-select' : 'form-select is-invalid'}
                                 onChange={(e) => handleOnChange(e.target.value, 'group')}
+                                value={userData.group}
                             >
                                 {groupUser.length > 0 && groupUser.map((item, index) => {
                                     return (
@@ -167,14 +204,14 @@ function ModalDelete(props) {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={props.onHide}>
+                    <Button variant="secondary" onClick={() => closeHandleUser()}>
                         Close
                     </Button>
                     <Button variant="primary" onClick={() => handleConfirm()} >
-                        Confirm
+                        {props.action === "CREATE" ? "Create!" : "Save!"}
                     </Button>
                 </Modal.Footer>
-            </Modal>
+            </Modal >
         </>
     );
 }

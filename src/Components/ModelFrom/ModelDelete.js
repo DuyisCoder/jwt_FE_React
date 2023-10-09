@@ -13,7 +13,7 @@ function ModalDelete(props) {
                         Close
                     </Button>
                     <Button variant="primary" onClick={props.confirmDeleteUser}>
-                        Confirm
+                        Delete!
                     </Button>
                 </Modal.Footer>
             </Modal>
