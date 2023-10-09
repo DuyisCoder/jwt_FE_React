@@ -72,12 +72,18 @@ export default function User() {
             <div className='container'>
                 <div className='manage-users-container'>
                     <div className='user-header'>
-                        <div className='title'>
-                            <h3>Table User:</h3>
+                        <div className='title mt-3'>
+                            <h3>Manager Users:</h3>
                         </div>
-                        <div className='actions'>
-                            <button className='btn btn-success'>Refresh</button>
-                            <button onClick={() => handleCreateUser()} className='btn btn-primary'>Create User</button>
+                        <div className='actions my-3'>
+                            <button className='btn btn-success refresh'>
+                                <i className='fa fa-refresh '></i>
+                                Refresh
+                            </button>
+                            <button onClick={() => handleCreateUser()} className='btn btn-primary'>
+                                <i className='fa fa-plus-circle'></i>
+                                Create User
+                            </button>
                         </div>
                     </div>
                     <div className='user-body mt-3'>
@@ -105,12 +111,16 @@ export default function User() {
                                                     <td>{item.username}</td>
                                                     <td>{item.Group ? item.Group.name : 'Chưa có'}</td>
                                                     <td className='d-flex justify-content-around'>
-                                                        <button className='btn btn-warning'
+                                                        <span
                                                             onClick={() => handleEdit(item)}
-                                                        >Edit</button>
-                                                        <button
+                                                        >
+                                                            <i className='fa fa-pencil font-i edit'></i>
+                                                        </span>
+                                                        <span
                                                             onClick={() => handleDelete(item)}
-                                                            className='btn btn-danger '>Delete</button>
+                                                        >
+                                                            <i className='fa fa-trash-o font-i delete'></i>
+                                                        </span>
                                                     </td>
                                                 </tr>
                                             )
@@ -153,7 +163,7 @@ export default function User() {
                         </div>
                     }
                 </div>
-            </div>
+            </div >
             <ModelDelete
                 show={showModalDelete}
                 handleClose={handleClose}

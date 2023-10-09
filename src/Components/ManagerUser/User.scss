@@ -1,3 +1,39 @@
 h1 {
     color: red;
 }
+
+.manage-users-container {
+    i {
+        padding-right: 7px;
+    }
+
+    .user-header {
+
+        .actions {
+            .refresh {
+                margin-right: 10px;
+            }
+        }
+
+    }
+
+    .user-body {
+        .edit {
+            color: orange;
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+
+        .delete {
+            color: red;
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+
+        .font-i {}
+    }
+}
