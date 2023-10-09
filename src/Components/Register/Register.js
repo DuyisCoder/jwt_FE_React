@@ -2,7 +2,7 @@ import { useState } from 'react';
 import './register.scss'
 import { useHistory } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { registerUser } from '../services/userServices';
+import { registerUser } from '../../services/userServices';
 const Register = () => {
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
@@ -66,7 +66,7 @@ const Register = () => {
         if (check == true) {
             let res = await registerUser(email, phone, username, password);
             console.log(res);
-            let dataServer = res.data;
+            let dataServer = res;
             if (+dataServer.EC === 0) {
                 toast.success(dataServer.EM);
                 setTimeout(() => {

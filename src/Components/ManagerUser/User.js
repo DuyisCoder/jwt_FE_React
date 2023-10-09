@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import './User.scss'
-import { deleteUser, fetchUserData, updateUser } from '../services/userServices'
+import { deleteUser, fetchUserData, updateUser } from '../../services/userServices'
 import ReactPaginate from 'react-paginate';
 import { toast } from 'react-toastify'
 import ModelDelete from '../ModelFrom/ModelDelete'
@@ -24,9 +24,9 @@ export default function User() {
     }, [page])
     const fetch = async () => {
         let res = await fetchUserData(page, limit);
-        if (res && res.data && res.data.EC === 0) {
-            setTotalPages(res.data.DT.totalPages)
-            setListUser(res.data.DT.users);
+        if (res && res.EC === 0) {
+            setTotalPages(res.DT.totalPages)
+            setListUser(res.DT.users);
         }
     }
     const handlePageClick = async (event) => {
@@ -43,14 +43,14 @@ export default function User() {
     }
     const confirmDeleteUser = async () => {
         let res = await deleteUser(dataModal);
-        if (res && res.data.EC === 0) {
-            toast.success(res.data.EM);
+        if (res && res.EC === 0) {
+            toast.success(res.EM);
             setTimeout(async () => {
                 await fetch();
                 setShowModalDelete(false);
             }, [500])
         } else {
-            toast.error(res.data.EM);
+            toast.error(res.EM);
         }
     }
     const handleCreateUser = () => {

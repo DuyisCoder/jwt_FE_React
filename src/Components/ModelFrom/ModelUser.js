@@ -2,11 +2,11 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import './ModelUser.scss'
 import { useEffect, useState } from 'react';
-import { fetchGroup, createUser, updateUser } from '../services/userServices';
+import { fetchGroup, createUser, updateUser } from '../../services/userServices';
 import { toast } from 'react-toastify';
 
 //sử dụng lodash để copyy
-import lodash, { lowerFirst } from 'lodash'
+import lodash from 'lodash'
 function ModalDelete(props) {
     const [groupUser, setGroupUser] = useState([]);
     useEffect(() => {
@@ -14,16 +14,16 @@ function ModalDelete(props) {
     }, [])
     const getGroups = async () => {
         let res = await fetchGroup();
-        if (res && res.data && res.data.EC === 0) {
-            setGroupUser(res.data.DT)
+        if (res && res.EC === 0) {
+            setGroupUser(res.DT)
             // KT nếu có data và có mảng thì gán groups là data sau đó lấy tất cả data cũ, update
             // thêm group:groups[0].id để tránh khi validate ban đầu bị empty
-            if (res.data.DT && res.data.DT.length > 0) {
-                let groups = res.data.DT;
+            if (res.DT && res.DT.length > 0) {
+                let groups = res.DT;
                 setUserData({ ...userData, group: groups[0].id })
             }
         } else {
-            toast.error(res.data.EM)
+            toast.error(res.EM)
         }
     }
     const defaultUserData = {
@@ -83,14 +83,14 @@ function ModalDelete(props) {
                 await createUser({ ...userData, groupId: userData['group'] })
                 :
                 await updateUser({ ...userData, groupId: userData['group'] });
-            if (res && res.data.EC === 0) {
-                toast.success(res.data.EM);
+            if (res && res.EC === 0) {
+                toast.success(res.EM);
                 props.onHide();
                 setUserData({ ...defaultUserData, group: groupUser && groupUser.length > 0 ? groupUser[0].id : '' })
-            } else if (res && res.data.EC !== 0) {
-                toast.error(res.data.EM);
+            } else if (res && res.EC !== 0) {
+                toast.error(res.EM);
                 let _validInput = lodash.cloneDeep(valueValidDefault);
-                _validInput[res.data.DT] = false;
+                _validInput[res.DT] = false;
                 setIsValidInput(_validInput);
             }
         }

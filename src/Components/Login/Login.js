@@ -2,7 +2,7 @@ import './login.scss'
 import { useHistory } from 'react-router-dom'
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify'
-import { loginUser } from '../services/userServices';
+import { loginUser } from '../../services/userServices';
 const Login = () => {
     const [valueLogin, setValueLogin] = useState("");
     const [password, setPassword] = useState("");
@@ -29,8 +29,8 @@ const Login = () => {
 
         }
         let res = await loginUser(valueLogin, password);
-        if (res && res.data && +res.data.EC === 0) {
-            toast.success(res.data.EM);
+        if (res && +res.EC === 0) {
+            toast.success(res.EM);
             let data = {
                 isAuthenticated: true,
                 token: 'fake token'
@@ -41,8 +41,8 @@ const Login = () => {
             window.location.reload();
             return;
         }
-        if (res && res.data && +res.data.EC !== 0) {
-            toast.error(res.data.EM);
+        if (res && +res.EC !== 0) {
+            toast.error(res.EM);
             return;
         }
     }
