@@ -14,7 +14,8 @@ const instance = axios.create({
 //     // Do something with request error
 //     return Promise.reject(error);
 // });
-
+// Mở trình duyệt chặn gửi cookie 
+instance.defaults.withCredentials = true;
 // Add a response interceptor
 instance.interceptors.response.use(function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger

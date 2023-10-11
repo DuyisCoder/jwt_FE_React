@@ -139,6 +139,7 @@ function ModalDelete(props) {
                                 disabled={props.action === "CREATE" ? false : true}
                                 className={isValidInput.phone ? 'form-control' : 'form-control is-invalid'}
                                 type='text'
+                                placeholder='0'
                                 value={userData.phone}
                                 onChange={(e) => handleOnChange(e.target.value, 'phone')}
                             />

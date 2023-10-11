@@ -36,8 +36,7 @@ const Login = () => {
                 token: 'fake token'
             }
             sessionStorage.setItem('account', JSON.stringify(data));
-
-            history.push('/users');
+            history.push('/');
             window.location.reload();
             return;
         }
