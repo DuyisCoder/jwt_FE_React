@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import './User.scss'
 import { deleteUser, fetchUserData, updateUser } from '../../services/userServices'
 import ReactPaginate from 'react-paginate';
 import { toast } from 'react-toastify'
 import ModelDelete from '../ModelFrom/ModelDelete'
 import ModelUser from '../ModelFrom/ModelUser'
-import { set } from 'lodash';
+import { UserContext } from '../../Context/UserContext';
 export default function User() {
     const [listUser, setListUser] = useState([]);
     const [page, setPage] = useState(1)
@@ -20,7 +20,6 @@ export default function User() {
     const [dataModalEdit, setDataModelEdit] = useState({});
     useEffect(() => {
         fetch();
-
     }, [page])
     const fetch = async () => {
         let res = await fetchUserData(page, limit);

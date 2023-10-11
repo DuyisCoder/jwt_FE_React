@@ -1,9 +1,11 @@
 import './login.scss'
 import { useHistory } from 'react-router-dom'
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify'
 import { loginUser } from '../../services/userServices';
-const Login = () => {
+import { UserContext } from '../../Context/UserContext';
+const Login = (props) => {
+    const { LoginContext, user } = useContext(UserContext);
     const [valueLogin, setValueLogin] = useState("");
     const [password, setPassword] = useState("");
     const history = useHistory();
@@ -14,6 +16,7 @@ const Login = () => {
         isValidLogin: true,
         isValidPassword: true,
     }
+
     const [objCheckInput, setObjCheckInput] = useState(defaultValidInput);
     const handleLogin = async () => {
         setObjCheckInput(defaultValidInput);
@@ -29,15 +32,20 @@ const Login = () => {
 
         }
         let res = await loginUser(valueLogin, password);
+        console.log("check res", res);
         if (res && +res.EC === 0) {
             toast.success(res.EM);
+            let groupWithRoles = res.DT.groupWithRoles;
+            let email = res.DT.email;
+            let username = res.DT.username;
+            let token = res.DT.access_token;
             let data = {
                 isAuthenticated: true,
-                token: 'fake token'
-            }
-            sessionStorage.setItem('account', JSON.stringify(data));
-            history.push('/');
-            window.location.reload();
+                token,
+                account: { groupWithRoles, email, username }
+            };
+            LoginContext(data);
+            history.push('/users');
             return;
         }
         if (res && +res.EC !== 0) {
@@ -46,18 +54,10 @@ const Login = () => {
         }
     }
     const handlePressEnter = (e) => {
-        console.log(e.charCode, e.key);
         if (e.charCode === 13 && e.code === "Enter") {
             handleLogin();
         }
     }
-    useEffect(() => {
-        let session = sessionStorage.getItem('account');
-        if (session) {
-            history.push('/');
-            window.location.reload();
-        }
-    })
     return (
         <div className='login-container'>
             <div className='container'>
