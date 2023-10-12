@@ -5,7 +5,7 @@ const instance = axios.create({
     baseURL: 'http://localhost:8888'
 });
 
-// instance.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+instance.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('jwt')}`
 
 // axios.interceptors.request.use(function (config) {
 //     // Do something before request is sent
