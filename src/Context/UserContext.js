@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react'
 import { getUserAccount } from '../services/userServices';
 const UserContext = React.createContext(null);
 const UserProvider = ({ children }) => {
-    const [user, setUser] = useState({
+    const defaultUser = {
+        isLoading: true,
         isAuthenticated: false,
         token: "",
         account: {}
-    });
+    }
+    const [user, setUser] = useState(defaultUser);
     const LoginContext = (userData) => {
-        setUser(userData);
+        setUser({ ...userData, isLoading: false });
         console.log("Check user from context", userData);
     };
     const Logout = () => {
@@ -27,13 +29,19 @@ const UserProvider = ({ children }) => {
             let data = {
                 isAuthenticated: true,
                 token: token,
-                account: { groupWithRoles, email, username }
+                account: { groupWithRoles, email, username },
+                isLoading: false
             };
             setUser(data);
+        } else {
+            setUser({ ...defaultUser, isLoading: false })
         }
     }
     useEffect(() => {
-        fetchUser();
+        // && window.location.pathname !== '/login'
+        if (window.location.pathname !== '/' || window.location.pathname !== '/login') {
+            fetchUser();
+        }
     }, [])
     return (
         <>

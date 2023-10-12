@@ -5,7 +5,9 @@ import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'font-awesome/css/font-awesome.min.css'
 import { UserProvider } from './Context/UserContext';
-
+import {
+  ColorRing
+} from 'react-loader-spinner'
 ReactDOM.render(
   <React.StrictMode>
     <UserProvider>
