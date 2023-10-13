@@ -13,11 +13,9 @@ const UserProvider = ({ children }) => {
         setUser({ ...userData, isLoading: false });
         console.log("Check user from context", userData);
     };
-    const Logout = () => {
-        setUser((user) => ({
-            name: '',
-            auth: false
-        }))
+    const LogoutContext = () => {
+        setUser({ ...defaultUser, isLoading: false });
+
     }
     const fetchUser = async () => {
         let res = await getUserAccount();
@@ -39,13 +37,15 @@ const UserProvider = ({ children }) => {
     }
     useEffect(() => {
         // && window.location.pathname !== '/login'
-        if (window.location.pathname !== '/' || window.location.pathname !== '/login') {
+        if (window.location.pathname !== '/' && window.location.pathname !== '/login') {
             fetchUser();
+        } else {
+            setUser({ ...user, isLoading: false });
         }
     }, [])
     return (
         <>
-            <UserContext.Provider value={{ user, LoginContext, Logout }}>
+            <UserContext.Provider value={{ user, LoginContext, LogoutContext }}>
                 {children}
             </UserContext.Provider>
         </>

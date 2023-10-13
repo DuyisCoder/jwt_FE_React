@@ -33,12 +33,13 @@ const Login = (props) => {
         }
         let res = await loginUser(valueLogin, password);
         console.log("check res", res);
-        let token = res.DT.access_token;
         if (res && +res.EC === 0) {
             toast.success(res.EM);
             let groupWithRoles = res.DT.groupWithRoles;
             let email = res.DT.email;
             let username = res.DT.username;
+            let token = res.DT.access_token;
+
             let data = {
                 isAuthenticated: true,
                 token,

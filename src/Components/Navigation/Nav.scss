@@ -27,3 +27,41 @@
         color: white;
     }
 }
+
+.nav-header {
+
+    .bg-header {
+        background-color: #20232a;
+    }
+
+
+
+    .nav-link {
+        &.active {
+            color: #61dafb !important;
+        }
+    }
+}
+
+.navbar-nav {
+
+    a,
+    .nav-link {
+        color: white;
+
+        &:hover {
+            color: #61dafb;
+        }
+    }
+}
+
+.bg-white {
+    color: black !important;
+}
+
+.nav-header {
+    .logo-nav {
+        color: while !important;
+    }
+
+}
